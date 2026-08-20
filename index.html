@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <meta name="theme-color" content="#6C63FF">
+
+    <meta name="description"
+          content="Resolve Pra Mim - seu assistente para resolver burocracias do dia a dia">
+
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="icon" type="image/png" href="icon-192x192.png">
+
+    <link rel="stylesheet" href="style.css">
+
+    <title>Resolve Pra Mim</title>
+</head>
+
+<body>
+
+    <!-- CABEÇALHO -->
+    <header class="top-header">
+        <div class="brand">
+            <div class="brand-icon">✓</div>
+
+            <div>
+                <h1>Resolve Pra Mim</h1>
+                <span>Seu assistente para burocracias</span>
+            </div>
+        </div>
+
+        <button class="icon-button" id="installButton" title="Instalar aplicativo">
+            📲
+        </button>
+    </header>
+
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main>
+
+        <!-- TELA INICIAL -->
+        <section id="homeScreen" class="screen active">
+
+            <div class="hero">
+                <span class="hello">Olá! 👋</span>
+
+                <h2>
+                    O que você precisa
+                    <span>resolver?</span>
+                </h2>
+
+                <p>
+                    Conte seu problema e eu mostro o que fazer,
+                    quais documentos você precisa e preparo uma mensagem para você.
+                </p>
+            </div>
+
+
+            <!-- CAMPO DE PROBLEMA -->
+            <div class="problem-box">
+
+                <label for="problemInput">
+                    Descreva seu problema
+                </label>
+
+                <textarea
+                    id="problemInput"
+                    placeholder="Ex.: Preciso cancelar minha internet..."
+                    rows="4"></textarea>
+
+                <button class="main-button" id="solveButton">
+                    <span>✨</span>
+                    Resolver pra mim
+                </button>
+
+            </div>
+
+
+            <!-- EXEMPLOS -->
+            <div class="section-title">
+                <h3>O que você pode resolver?</h3>
+            </div>
+
+            <div class="examples-grid">
+
+                <button class="example-card" data-problem="Preciso cancelar minha internet">
+                    <span class="example-icon">🌐</span>
+                    <strong>Cancelar internet</strong>
+                    <small>Saiba como cancelar seu plano</small>
+                </button>
+
+                <button class="example-card" data-problem="Preciso pedir segunda via de um documento">
+                    <span class="example-icon">📄</span>
+                    <strong>Segunda via</strong>
+                    <small>Descubra como solicitar</small>
+                </button>
+
+                <button class="example-card" data-problem="Quero reclamar de uma cobrança">
+                    <span class="example-icon">💰</span>
+                    <strong>Reclamar de cobrança</strong>
+                    <small>Prepare sua reclamação</small>
+                </button>
+
+                <button class="example-card" data-problem="Quero cancelar uma compra">
+                    <span class="example-icon">🛒</span>
+                    <strong>Cancelar compra</strong>
+                    <small>Veja os próximos passos</small>
+                </button>
+
+                <button class="example-card" data-problem="Preciso resolver algo no governo">
+                    <span class="example-icon">🏛️</span>
+                    <strong>Serviço público</strong>
+                    <small>Organize sua solicitação</small>
+                </button>
+
+                <button class="example-card" data-problem="Quero fazer uma reclamação">
+                    <span class="example-icon">📢</span>
+                    <strong>Fazer reclamação</strong>
+                    <small>Crie sua mensagem</small>
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- TELA DE RESULTADO -->
+        <section id="resultScreen" class="screen">
+
+            <button class="back-button" id="backHome">
+                ← Voltar
+            </button>
+
+            <div class="result-header">
+
+                <div class="result-icon" id="resultIcon">
+                    📋
+                </div>
+
+                <div>
+                    <span class="result-label">Entendi seu problema</span>
+
+                    <h2 id="resultTitle">
+                        Vamos resolver isso
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <!-- RESUMO -->
+            <div class="result-card highlight">
+
+                <div class="card-title">
+                    <span>🎯</span>
+                    <h3>O que você precisa fazer</h3>
+                </div>
+
+                <p id="resultDescription"></p>
+
+            </div>
+
+
+            <!-- PASSO A PASSO -->
+            <div class="result-card">
+
+                <div class="card-title">
+                    <span>📝</span>
+                    <h3>Passo a passo</h3>
+                </div>
+
+                <div id="stepsContainer" class="steps"></div>
+
+            </div>
+
+
+            <!-- DOCUMENTOS -->
+            <div class="result-card">
+
+                <div class="card-title">
+                    <span>📄</span>
+                    <h3>Documentos necessários</h3>
+                </div>
+
+                <ul id="documentsContainer" class="documents"></ul>
+
+            </div>
+
+
+            <!-- MENSAGEM -->
+            <div class="result-card">
+
+                <div class="card-title">
+                    <span>✉️</span>
+                    <h3>Mensagem pronta</h3>
+                </div>
+
+                <textarea id="messageContainer"
+                          class="message-box"
+                          readonly></textarea>
+
+                <button class="secondary-button" id="copyMessage">
+                    📋 Copiar mensagem
+                </button>
+
+            </div>
+
+
+            <!-- TAREFA -->
+            <div class="task-actions">
+
+                <button class="main-button" id="saveTask">
+                    📌 Acompanhar esta tarefa
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- MINHAS TAREFAS -->
+        <section id="tasksScreen" class="screen">
+
+            <div class="page-header">
+                <span>📌</span>
+
+                <div>
+                    <h2>Minhas tarefas</h2>
+                    <p>Acompanhe suas solicitações.</p>
+                </div>
+            </div>
+
+            <div id="tasksContainer"></div>
+
+            <div id="emptyTasks" class="empty-state">
+
+                <div>📭</div>
+
+                <h3>Nenhuma tarefa ainda</h3>
+
+                <p>
+                    Quando você salvar uma tarefa,
+                    ela aparecerá aqui.
+                </p>
+
+                <button class="secondary-button" id="goSolve">
+                    Resolver uma burocracia
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- HISTÓRICO -->
+        <section id="historyScreen" class="screen">
+
+            <div class="page-header">
+                <span>🕘</span>
+
+                <div>
+                    <h2>Histórico</h2>
+                    <p>Veja o que você já resolveu.</p>
+                </div>
+            </div>
+
+            <div id="historyContainer"></div>
+
+        </section>
+
+
+        <!-- PERFIL -->
+        <section id="profileScreen" class="screen">
+
+            <div class="profile-card">
+
+                <div class="profile-avatar">
+                    👤
+                </div>
+
+                <h2>Meu perfil</h2>
+
+                <p>
+                    Suas informações ficam salvas apenas
+                    neste dispositivo nesta versão do aplicativo.
+                </p>
+
+            </div>
+
+            <div class="settings-card">
+
+                <button id="clearData">
+                    🗑️ Limpar dados do aplicativo
+                    <span>›</span>
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- NAVEGAÇÃO INFERIOR -->
+    <nav class="bottom-nav">
+
+        <button class="nav-item active" data-screen="homeScreen">
+            <span>⌂</span>
+            <small>Início</small>
+        </button>
+
+        <button class="nav-item" data-screen="tasksScreen">
+            <span>📌</span>
+            <small>Tarefas</small>
+        </button>
+
+        <button class="nav-main" id="navSolve">
+            <span>+</span>
+        </button>
+
+        <button class="nav-item" data-screen="historyScreen">
+            <span>🕘</span>
+            <small>Histórico</small>
+        </button>
+
+        <button class="nav-item" data-screen="profileScreen">
+            <span>👤</span>
+            <small>Perfil</small>
+        </button>
+
+    </nav>
+
+
+    <!-- TOAST -->
+    <div id="toast" class="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>

@@ -1015,3 +1015,234 @@ button {
         padding: 13px;
     }
 }
+/* =========================================
+   REQUISITOS DE UX — ZONA DO POLEGAR
+========================================= */
+
+/* Mantém as ações principais na região inferior e amplia áreas de toque. */
+.main-button,
+.secondary-button,
+.nav-item,
+.nav-main,
+.task-controls button,
+.back-button,
+.example-card,
+.icon-button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.nav-item,
+.nav-main,
+.task-controls button {
+    min-height: 44px;
+}
+
+/* =========================================
+   SKELETON SCREEN
+========================================= */
+
+.skeleton-result {
+    display: none;
+    align-items: center;
+    gap: 14px;
+    padding: 4px 0 22px;
+}
+
+.resultScreen-loading .skeleton-result {
+    display: flex;
+}
+
+.resultScreen-loading .result-header,
+.resultScreen-loading .result-card,
+.resultScreen-loading .task-actions {
+    display: none;
+}
+
+.skeleton {
+    position: relative;
+    overflow: hidden;
+    background: #ececf4;
+    border-radius: 10px;
+}
+
+.skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.65), transparent);
+    animation: skeletonShimmer 1.15s infinite;
+}
+
+.skeleton-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 17px;
+    flex: 0 0 56px;
+}
+
+.skeleton-result-text {
+    flex: 1;
+}
+
+.skeleton-label {
+    width: 120px;
+    height: 10px;
+    margin-bottom: 10px;
+}
+
+.skeleton-title {
+    width: min(75%, 280px);
+    height: 22px;
+}
+
+@keyframes skeletonShimmer {
+    100% { transform: translateX(100%); }
+}
+
+/* =========================================
+   CONFIRMAÇÃO POR GESTO — ARRASTAR PARA DELETAR
+========================================= */
+
+.gesture-hint {
+    color: var(--text-light);
+    font-size: 11px;
+    margin: -2px 2px 12px;
+}
+
+.task-swipe {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border-radius: 17px;
+    background: #fee2e2;
+}
+
+.task-swipe-delete {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 112px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: #b91c1c;
+    background: linear-gradient(90deg, #fee2e2 0%, #fecaca 100%);
+    font-size: 11px;
+    font-weight: 800;
+    pointer-events: none;
+}
+
+.trash-icon {
+    display: block;
+    font-size: 26px;
+    line-height: 1;
+    opacity: calc(.35 + (var(--swipe-progress, 0) * .65));
+    transform: scale(calc(.72 + (var(--swipe-progress, 0) * .28))) rotate(calc(var(--swipe-progress, 0) * -8deg));
+    transition: transform .12s ease, opacity .12s ease;
+}
+
+.trash-label {
+    opacity: calc(.45 + (var(--swipe-progress, 0) * .55));
+}
+
+
+.task-card.swipe-card {
+    position: relative;
+    margin-bottom: 0;
+    transition: transform .22s cubic-bezier(.22,1,.36,1), opacity .22s ease, box-shadow .22s ease;
+    will-change: transform;
+    user-select: none;
+}
+
+.task-card.swiping {
+    transition: none;
+}
+
+.task-card.swipe-ready {
+    box-shadow: 0 8px 20px rgba(239,68,68,.14);
+}
+
+.task-card.swipe-ready + * {
+    opacity: 1;
+}
+
+.task-card.swipe-delete {
+    transform: translateX(-110%);
+    opacity: 0;
+}
+
+/* =========================================
+   MICROINTERAÇÕES PROGRESSIVAS
+========================================= */
+
+.main-button,
+.secondary-button,
+.example-card,
+.nav-item,
+.nav-main,
+.icon-button,
+.task-controls button {
+    transition: transform .18s cubic-bezier(.22,1,.36,1), box-shadow .18s ease, opacity .18s ease, background .18s ease;
+}
+
+.main-button:active,
+.secondary-button:active,
+.example-card:active,
+.icon-button:active,
+.task-controls button:active {
+    transform: scale(.97);
+}
+
+.nav-item:active {
+    transform: translateY(2px) scale(.96);
+}
+
+.nav-main:active {
+    transform: translateY(2px) scale(.92);
+}
+
+.example-card:hover {
+    transform: translateY(-2px);
+}
+
+.result-card,
+.task-card,
+.example-card {
+    animation: contentEnter .35s cubic-bezier(.22,1,.36,1) both;
+}
+
+.step {
+    animation: contentEnter .3s cubic-bezier(.22,1,.36,1) both;
+}
+
+.step:nth-child(2) { animation-delay: .04s; }
+.step:nth-child(3) { animation-delay: .08s; }
+.step:nth-child(4) { animation-delay: .12s; }
+.step:nth-child(5) { animation-delay: .16s; }
+
+@keyframes contentEnter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.action-success {
+    animation: actionSuccess .45s cubic-bezier(.22,1,.36,1);
+}
+
+@keyframes actionSuccess {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.025); }
+    100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+    }
+}

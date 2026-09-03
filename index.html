@@ -135,7 +135,15 @@
                 ← Voltar
             </button>
 
-            <div class="result-header">
+            <div id="resultSkeleton" class="skeleton-result" aria-hidden="true">
+                <div class="skeleton skeleton-icon"></div>
+                <div class="skeleton-result-text">
+                    <div class="skeleton skeleton-label"></div>
+                    <div class="skeleton skeleton-title"></div>
+                </div>
+            </div>
+
+            <div class="result-header" id="resultHeader">
 
                 <div class="result-icon" id="resultIcon">
                     📋
@@ -233,6 +241,8 @@
                     <p>Acompanhe suas solicitações.</p>
                 </div>
             </div>
+
+            <p class="gesture-hint" id="gestureHint">Deslize uma tarefa para a esquerda para excluir.</p>
 
             <div id="tasksContainer"></div>
 

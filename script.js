@@ -1,6 +1,3 @@
-/* =========================================
-   JavaScript Principal (Otimizado)
-========================================= */
 
 "use strict";
 
@@ -239,7 +236,7 @@ function showScreen(screenId) {
    RESOLVER PROBLEMA
 ========================================= */
 
-function solveProblem() {
+async function solveProblem() {
     if (!problemInput) return;
 
     const text = problemInput.value.trim();
@@ -251,6 +248,13 @@ function solveProblem() {
     }
 
     currentSolution = identifyProblem(text);
+
+    // Skeleton Screen: antecipa a estrutura do resultado enquanto os dados são preparados.
+    const resultScreen = document.getElementById("resultScreen");
+    resultScreen?.classList.add("resultScreen-loading");
+    showScreen("resultScreen");
+
+    await new Promise(resolve => setTimeout(resolve, 420));
 
     const resultIcon = document.getElementById("resultIcon");
     const resultTitle = document.getElementById("resultTitle");
@@ -292,7 +296,8 @@ function solveProblem() {
         msgContainer.value = currentSolution.message;
     }
 
-    showScreen("resultScreen");
+    resultScreen?.classList.remove("resultScreen-loading");
+    document.getElementById("resultHeader")?.classList.add("action-success");
 }
 
 /* =========================================
@@ -331,8 +336,13 @@ function saveTask() {
     history.unshift({ ...task, completedAt: null });
     setStorage("resolvePraMimHistory", history);
 
+    const saveButton = document.getElementById("saveTask");
+    saveButton?.classList.add("action-success");
     showToast("Tarefa salva com sucesso! 📌");
-    setTimeout(() => showScreen("tasksScreen"), 700);
+    setTimeout(() => {
+        saveButton?.classList.remove("action-success");
+        showScreen("tasksScreen");
+    }, 700);
 }
 
 function renderTasks() {
@@ -350,8 +360,13 @@ function renderTasks() {
     if (empty) empty.style.display = "none";
 
     tasks.forEach(task => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "task-swipe";
+        wrapper.innerHTML = `<div class="task-swipe-delete" aria-hidden="true"><span class="trash-icon">🗑️</span><span class="trash-label">Excluir</span></div>`;
+
         const card = document.createElement("div");
-        card.className = "task-card";
+        card.className = "task-card swipe-card";
+        card.dataset.taskId = task.id;
 
         const statusMap = {
             pending: { text: "Pendente", class: "pending" },
@@ -371,12 +386,64 @@ function renderTasks() {
             </div>
             <div class="task-controls">
                 ${task.status !== "done" ? `<button onclick="advanceTask(${task.id})">Avançar status</button>` : ""}
-                <button onclick="deleteTask(${task.id})">Excluir</button>
             </div>
         `;
 
-        container.appendChild(card);
+        wrapper.appendChild(card);
+        container.appendChild(wrapper);
+        enableSwipeToDelete(card, task.id);
     });
+}
+
+/* =========================================
+   GESTO DE CONFIRMAÇÃO — ARRASTAR PARA DELETAR
+========================================= */
+
+function enableSwipeToDelete(card, id) {
+    let startX = 0;
+    let currentX = 0;
+    let dragging = false;
+    let pointerId = null;
+    const threshold = 92;
+
+    card.addEventListener("pointerdown", event => {
+        if (event.target.closest("button, a, textarea, input")) return;
+        startX = event.clientX;
+        currentX = 0;
+        dragging = true;
+        pointerId = event.pointerId;
+        card.setPointerCapture(pointerId);
+        card.classList.add("swiping");
+    });
+
+    card.addEventListener("pointermove", event => {
+        if (!dragging || event.pointerId !== pointerId) return;
+
+        currentX = Math.min(0, event.clientX - startX);
+        const limitedX = Math.max(currentX, -120);
+        card.style.transform = `translateX(${limitedX}px)`;
+        card.style.setProperty("--swipe-progress", Math.min(Math.abs(currentX) / threshold, 1).toFixed(2));
+        card.classList.toggle("swipe-ready", Math.abs(currentX) >= threshold);
+    });
+
+    const finishSwipe = () => {
+        if (!dragging) return;
+        dragging = false;
+        card.classList.remove("swiping");
+
+        if (Math.abs(currentX) >= threshold) {
+            card.style.setProperty("--swipe-progress", "1");
+            card.classList.add("swipe-delete");
+            setTimeout(() => deleteTask(id, true), 320);
+        } else {
+            card.style.transform = "";
+            card.style.removeProperty("--swipe-progress");
+            card.classList.remove("swipe-ready");
+        }
+    };
+
+    card.addEventListener("pointerup", finishSwipe);
+    card.addEventListener("pointercancel", finishSwipe);
 }
 
 function advanceTask(id) {
@@ -401,14 +468,14 @@ function advanceTask(id) {
     showToast("Status atualizado! ✓");
 }
 
-function deleteTask(id) {
-    if (!confirm("Tem certeza que deseja excluir esta tarefa?")) return;
+function deleteTask(id, confirmedByGesture = false) {
+    if (!confirmedByGesture && !confirm("Para excluir, arraste a tarefa para a esquerda.")) return;
 
     tasks = tasks.filter(task => task.id !== id);
     setStorage("resolvePraMimTasks", tasks);
 
     renderTasks();
-    showToast("Tarefa excluída.");
+    showToast("Tarefa excluída. 🗑️");
 }
 
 function renderHistory() {

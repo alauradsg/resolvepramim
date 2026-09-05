@@ -351,7 +351,26 @@
     </div>
 
 
+    <!-- RAIZ DO MODAL DE ACOMPANHAMENTO DE STATUS (REACT) -->
+    <div id="statusModalRoot"></div>
+
+
     <script src="script.js"></script>
+
+    <!-- React + Framer Motion + Lottie via CDN (sem build), usados apenas no modal de status -->
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18.3.1",
+            "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+            "react-dom": "https://esm.sh/react-dom@18.3.1",
+            "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+            "framer-motion": "https://esm.sh/framer-motion@11.11.17?external=react,react-dom",
+            "lottie-web": "https://esm.sh/lottie-web@5.12.2"
+        }
+    }
+    </script>
+    <script type="module" src="status-modal.js"></script>
 
 </body>
 </html>

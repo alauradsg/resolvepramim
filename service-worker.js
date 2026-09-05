@@ -1,10 +1,12 @@
-const CACHE_NAME = "resolve-pra-mim-v1";
+const CACHE_NAME = "resolve-pra-mim-v2";
 
 const FILES_TO_CACHE = [
     "./",
     "./index.html",
     "./style.css",
     "./script.js",
+    "./status-modal.js",
+    "./success-check.json",
     "./manifest.json",
     "./icon-192x192.png"
 ];

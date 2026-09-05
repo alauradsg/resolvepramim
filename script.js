@@ -385,13 +385,17 @@ function renderTasks() {
                 <span class="status ${currentStatus.class}">${currentStatus.text}</span>
             </div>
             <div class="task-controls">
-                ${task.status !== "done" ? `<button onclick="advanceTask(${task.id})">Avançar status</button>` : ""}
+                <button class="track-status-button">👁️ Acompanhar status</button>
             </div>
         `;
 
         wrapper.appendChild(card);
         container.appendChild(wrapper);
         enableSwipeToDelete(card, task.id);
+
+        card.querySelector(".track-status-button")?.addEventListener("click", () => {
+            window.openStatusModal?.(task);
+        });
     });
 }
 
@@ -444,28 +448,6 @@ function enableSwipeToDelete(card, id) {
 
     card.addEventListener("pointerup", finishSwipe);
     card.addEventListener("pointercancel", finishSwipe);
-}
-
-function advanceTask(id) {
-    const task = tasks.find(item => item.id === id);
-    if (!task) return;
-
-    if (task.status === "pending") task.status = "progress";
-    else if (task.status === "progress") task.status = "done";
-
-    setStorage("resolvePraMimTasks", tasks);
-
-    const historyItem = history.find(item => item.id === id);
-    if (historyItem) {
-        historyItem.status = task.status;
-        if (task.status === "done") {
-            historyItem.completedAt = new Date().toLocaleDateString("pt-BR");
-        }
-        setStorage("resolvePraMimHistory", history);
-    }
-
-    renderTasks();
-    showToast("Status atualizado! ✓");
 }
 
 function deleteTask(id, confirmedByGesture = false) {

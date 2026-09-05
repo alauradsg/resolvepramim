@@ -1246,3 +1246,182 @@ button {
         transition-duration: .01ms !important;
     }
 }
+
+/* =========================================
+   MODAL DE ACOMPANHAMENTO DE STATUS
+   (React + Framer Motion, montado em #statusModalRoot)
+========================================= */
+
+.status-modal-backdrop {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(17, 17, 30, 0.45);
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    z-index: 300;
+}
+
+.status-modal-sheet {
+    width: 100%;
+    max-width: 700px;
+
+    background: var(--surface);
+
+    border-radius: 24px 24px 0 0;
+
+    padding: 10px 22px calc(22px + env(safe-area-inset-bottom));
+
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.18);
+}
+
+.status-modal-handle {
+    width: 40px;
+    height: 5px;
+
+    border-radius: 3px;
+
+    background: var(--border);
+
+    margin: 6px auto 18px;
+}
+
+.status-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-bottom: 22px;
+}
+
+.status-modal-label {
+    display: block;
+
+    color: var(--text-light);
+    font-size: 12px;
+
+    margin-bottom: 3px;
+}
+
+.status-modal-header h3 {
+    font-size: 17px;
+    line-height: 1.3;
+}
+
+.status-modal-close {
+    flex-shrink: 0;
+
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+
+    border: 0;
+    border-radius: 50%;
+
+    background: #f0efff;
+    color: var(--text-light);
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.status-tracker {
+    display: flex;
+    align-items: flex-start;
+
+    padding: 4px 4px 22px;
+}
+
+.status-tracker-item {
+    position: relative;
+
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.status-tracker-node {
+    width: 44px;
+    height: 44px;
+
+    border-radius: 50%;
+
+    background: #f0efff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 19px;
+
+    overflow: hidden;
+
+    z-index: 1;
+}
+
+.status-tracker-item.done .status-tracker-node,
+.status-tracker-item.current .status-tracker-node {
+    background: #eeecff;
+}
+
+.status-tracker-item.upcoming .status-tracker-node {
+    opacity: 0.45;
+}
+
+.status-tracker-line {
+    position: absolute;
+    top: 21px;
+    left: 50%;
+
+    width: 100%;
+    height: 3px;
+
+    background: var(--border);
+}
+
+.status-tracker-line.filled {
+    background: var(--primary);
+}
+
+.status-tracker-label {
+    margin-top: 8px;
+
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+
+    color: var(--text-light);
+}
+
+.status-tracker-item.done .status-tracker-label,
+.status-tracker-item.current .status-tracker-label {
+    color: var(--text);
+}
+
+.status-step-lottie {
+    width: 44px;
+    height: 44px;
+}
+
+.status-modal-hint {
+    color: var(--text-light);
+    font-size: 12px;
+    text-align: center;
+}
+
+@media (min-width: 700px) {
+    .status-modal-sheet {
+        border-radius: 24px;
+        margin-bottom: 40px;
+    }
+}

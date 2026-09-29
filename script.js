@@ -515,6 +515,7 @@ function showToast(message) {
         toast.classList.remove("show");
     }, 2500);
 }
+window.showToast = showToast;
 
 /* =========================================
    EVENT LISTENERS (SAFE REGISTRATION)

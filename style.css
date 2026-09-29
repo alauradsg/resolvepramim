@@ -1,5 +1,5 @@
 /* =========================================
-   RESET
+   RESET & VARIÁVEIS GLOBAIS
 ========================================= */
 
 * {
@@ -9,6 +9,7 @@
 }
 
 :root {
+    /* Cores do Design System */
     --primary: #6c63ff;
     --primary-dark: #5148e5;
     --secondary: #8b5cf6;
@@ -25,6 +26,46 @@
     --warning: #f59e0b;
 
     --radius: 18px;
+
+    /* =========================================
+       HIERARQUIA TIPOGRÁFICA ESCALONÁVEL (MOBILE)
+       Conforme requisitos da disciplina Mobile II:
+       Display (32px), H1 (24px), H2 (20px), H3 (18px),
+       Body (16px), Small (14px), Caption (12px)
+    ========================================= */
+    --display: 2rem;       /* 32px - Título de destaque e impacto visual */
+    --h1: 1.5rem;          /* 24px - Títulos principais de tela */
+    --h2: 1.25rem;         /* 20px - Títulos de seções e cartões principais */
+    --h3: 1.125rem;        /* 18px - Subtítulos e passos destacados */
+    --body: 1rem;          /* 16px - Texto principal de leitura (evita zoom iOS) */
+    --small: 0.875rem;     /* 14px - Metadados e textos secundários */
+    --caption: 0.75rem;    /* 12px - Legendas, tags, datas e badges */
+
+    /* Pesos tipográficos padronizados */
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+    --weight-extrabold: 800;
+
+    /* Ritmo vertical / Line heights */
+    --lh-display: 1.15;
+    --lh-heading: 1.25;
+    --lh-body: 1.6;
+    --lh-tight: 1.3;
+}
+
+/* =========================================
+   DARK MODE ADAPTATIVO
+========================================= */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #0f172a;
+        --surface: #1e293b;
+        --text: #f8fafc;
+        --text-light: #94a3b8;
+        --border: #334155;
+    }
 }
 
 html {
@@ -40,14 +81,61 @@ body {
         Arial,
         sans-serif;
 
+    font-size: var(--body);
+    font-weight: var(--weight-regular);
+    line-height: var(--lh-body);
+
     background: var(--background);
     color: var(--text);
 
     min-height: 100vh;
-
     padding-bottom: 90px;
+    -webkit-font-smoothing: antialiased;
 }
 
+/* =========================================
+   ESTILOS SEMÂNTICOS DE TIPOGRAFIA
+========================================= */
+
+h1 {
+    font-size: var(--h1);
+    font-weight: var(--weight-bold);
+    line-height: var(--lh-heading);
+}
+
+h2 {
+    font-size: var(--h2);
+    font-weight: var(--weight-bold);
+    line-height: var(--lh-heading);
+}
+
+h3 {
+    font-size: var(--h3);
+    font-weight: var(--weight-semibold);
+    line-height: var(--lh-heading);
+}
+
+p {
+    font-size: var(--body);
+    line-height: var(--lh-body);
+}
+
+.display {
+    font-size: var(--display);
+    font-weight: var(--weight-extrabold);
+    line-height: var(--lh-display);
+    letter-spacing: -0.5px;
+}
+
+.small {
+    font-size: var(--small);
+    line-height: 1.4;
+}
+
+.caption {
+    font-size: var(--caption);
+    line-height: var(--lh-tight);
+}
 
 /* =========================================
    HEADER
@@ -55,9 +143,7 @@ body {
 
 .top-header {
     height: 76px;
-
     background: var(--surface);
-
     border-bottom: 1px solid var(--border);
 
     display: flex;
@@ -65,7 +151,6 @@ body {
     justify-content: space-between;
 
     padding: 0 20px;
-
     position: sticky;
     top: 0;
     z-index: 50;
@@ -80,7 +165,6 @@ body {
 .brand-icon {
     width: 42px;
     height: 42px;
-
     border-radius: 13px;
 
     background: linear-gradient(
@@ -95,18 +179,20 @@ body {
     align-items: center;
     justify-content: center;
 
-    font-size: 22px;
-    font-weight: 800;
+    font-size: var(--h1);
+    font-weight: var(--weight-extrabold);
 }
 
 .brand h1 {
-    font-size: 17px;
+    font-size: var(--body);
+    font-weight: var(--weight-bold);
     line-height: 1.2;
 }
 
 .brand span {
     color: var(--text-light);
-    font-size: 11px;
+    font-size: var(--caption);
+    font-weight: var(--weight-regular);
 }
 
 .icon-button {
@@ -115,14 +201,11 @@ body {
 
     width: 42px;
     height: 42px;
-
     border-radius: 13px;
 
-    font-size: 19px;
-
+    font-size: var(--h2);
     cursor: pointer;
 }
-
 
 /* =========================================
    MAIN
@@ -131,9 +214,7 @@ body {
 main {
     width: 100%;
     max-width: 700px;
-
     margin: 0 auto;
-
     padding: 24px 18px 110px;
 }
 
@@ -145,7 +226,6 @@ main {
     display: block;
 }
 
-
 /* =========================================
    HERO
 ========================================= */
@@ -156,15 +236,16 @@ main {
 
 .hello {
     color: var(--primary);
-    font-weight: 700;
-    font-size: 14px;
+    font-weight: var(--weight-bold);
+    font-size: var(--small);
 }
 
 .hero h2 {
-    font-size: 31px;
-    line-height: 1.15;
+    font-size: var(--display);
+    font-weight: var(--weight-extrabold);
+    line-height: var(--lh-display);
     margin-top: 8px;
-    letter-spacing: -1px;
+    letter-spacing: -0.5px;
 }
 
 .hero h2 span {
@@ -173,12 +254,10 @@ main {
 
 .hero p {
     color: var(--text-light);
-    font-size: 15px;
-    line-height: 1.6;
-
+    font-size: var(--body);
+    line-height: var(--lh-body);
     margin-top: 12px;
 }
-
 
 /* =========================================
    PROBLEM BOX
@@ -186,54 +265,41 @@ main {
 
 .problem-box {
     background: var(--surface);
-
     border-radius: 22px;
-
     padding: 18px;
-
     border: 1px solid var(--border);
-
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
 }
 
 .problem-box label {
     display: block;
-
-    font-size: 14px;
-    font-weight: 700;
-
+    font-size: var(--small);
+    font-weight: var(--weight-bold);
     margin-bottom: 10px;
 }
 
 .problem-box textarea {
     width: 100%;
-
     resize: vertical;
-
     min-height: 110px;
 
     border: 1px solid var(--border);
-
     border-radius: 14px;
-
     padding: 14px;
 
     font-family: inherit;
-
-    font-size: 15px;
-
+    font-size: var(--body);
+    line-height: var(--lh-body);
     outline: none;
-
     transition: 0.2s;
+    background: var(--surface);
+    color: var(--text);
 }
 
 .problem-box textarea:focus {
     border-color: var(--primary);
-
-    box-shadow:
-        0 0 0 3px rgba(108, 99, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12);
 }
-
 
 /* =========================================
    BUTTONS
@@ -245,13 +311,9 @@ button {
 
 .main-button {
     width: 100%;
-
     margin-top: 14px;
-
     border: 0;
-
     border-radius: 15px;
-
     padding: 16px;
 
     background: linear-gradient(
@@ -261,15 +323,11 @@ button {
     );
 
     color: white;
-
-    font-size: 15px;
-    font-weight: 800;
-
+    font-size: var(--body);
+    font-weight: var(--weight-extrabold);
     cursor: pointer;
 
-    box-shadow:
-        0 10px 20px rgba(108, 99, 255, 0.25);
-
+    box-shadow: 0 10px 20px rgba(108, 99, 255, 0.25);
     transition: 0.2s;
 }
 
@@ -283,39 +341,28 @@ button {
 
 .secondary-button {
     width: 100%;
-
     border: 1px solid var(--border);
-
-    background: #f8f8ff;
-
+    background: var(--surface);
     color: var(--primary);
-
     border-radius: 13px;
-
     padding: 13px;
 
-    font-weight: 700;
-
+    font-size: var(--small);
+    font-weight: var(--weight-bold);
     cursor: pointer;
-
     margin-top: 10px;
 }
 
 .back-button {
     border: 0;
-
     background: transparent;
-
     color: var(--primary);
 
-    font-size: 14px;
-    font-weight: 700;
-
+    font-size: var(--small);
+    font-weight: var(--weight-bold);
     cursor: pointer;
-
     margin-bottom: 18px;
 }
-
 
 /* =========================================
    EXAMPLES
@@ -326,65 +373,51 @@ button {
 }
 
 .section-title h3 {
-    font-size: 17px;
+    font-size: var(--h3);
+    font-weight: var(--weight-bold);
 }
 
 .examples-grid {
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
     gap: 11px;
 }
 
 .example-card {
     text-align: left;
-
     background: var(--surface);
-
     border: 1px solid var(--border);
-
     border-radius: 17px;
-
     padding: 16px;
-
     cursor: pointer;
-
     transition: 0.2s;
 }
 
 .example-card:hover {
     border-color: var(--primary);
-
     transform: translateY(-2px);
 }
 
 .example-icon {
     display: block;
-
-    font-size: 27px;
-
+    font-size: 28px;
     margin-bottom: 10px;
 }
 
 .example-card strong {
     display: block;
-
-    font-size: 13px;
+    font-size: var(--small);
+    font-weight: var(--weight-bold);
+    color: var(--text);
 }
 
 .example-card small {
     display: block;
-
     color: var(--text-light);
-
-    font-size: 11px;
-
+    font-size: var(--caption);
     line-height: 1.4;
-
     margin-top: 5px;
 }
-
 
 /* =========================================
    RESULT
@@ -392,51 +425,41 @@ button {
 
 .result-header {
     display: flex;
-
     align-items: center;
-
     gap: 13px;
-
     margin-bottom: 20px;
 }
 
 .result-icon {
     width: 52px;
     height: 52px;
-
     border-radius: 16px;
-
     background: #eeecff;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    font-size: 25px;
+    font-size: 26px;
 }
 
 .result-label {
     color: var(--text-light);
-
-    font-size: 12px;
+    font-size: var(--caption);
+    font-weight: var(--weight-medium);
 }
 
 .result-header h2 {
-    font-size: 22px;
-
+    font-size: var(--h1);
+    font-weight: var(--weight-bold);
+    line-height: var(--lh-heading);
     margin-top: 3px;
 }
 
 .result-card {
     background: var(--surface);
-
     border: 1px solid var(--border);
-
     border-radius: 18px;
-
     padding: 18px;
-
     margin-bottom: 14px;
 }
 
@@ -446,30 +469,25 @@ button {
 
 .card-title {
     display: flex;
-
     align-items: center;
-
     gap: 9px;
-
     margin-bottom: 12px;
 }
 
 .card-title span {
-    font-size: 20px;
+    font-size: var(--h2);
 }
 
 .card-title h3 {
-    font-size: 15px;
+    font-size: var(--h3);
+    font-weight: var(--weight-bold);
 }
 
 .result-card p {
     color: var(--text-light);
-
-    line-height: 1.6;
-
-    font-size: 14px;
+    line-height: var(--lh-body);
+    font-size: var(--body);
 }
-
 
 /* =========================================
    STEPS
@@ -477,58 +495,45 @@ button {
 
 .steps {
     display: flex;
-
     flex-direction: column;
-
     gap: 12px;
 }
 
 .step {
     display: flex;
-
     gap: 12px;
 }
 
 .step-number {
     flex-shrink: 0;
-
     width: 30px;
     height: 30px;
-
     border-radius: 50%;
-
     background: #eeecff;
-
     color: var(--primary);
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
-    font-size: 12px;
-
-    font-weight: 800;
+    font-size: var(--caption);
+    font-weight: var(--weight-extrabold);
 }
 
 .step-content strong {
     display: block;
-
-    font-size: 13px;
-
+    font-size: var(--small);
+    font-weight: var(--weight-bold);
+    color: var(--text);
     margin-bottom: 3px;
 }
 
 .step-content span {
     display: block;
-
     color: var(--text-light);
-
-    font-size: 12px;
-
+    font-size: var(--caption);
     line-height: 1.5;
 }
-
 
 /* =========================================
    DOCUMENTS
@@ -540,22 +545,17 @@ button {
 
 .documents li {
     display: flex;
-
     align-items: center;
-
     gap: 9px;
-
     padding: 9px 0;
-
-    border-bottom: 1px solid #f0f0f0;
-
-    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+    font-size: var(--small);
+    line-height: 1.5;
 }
 
 .documents li:last-child {
     border-bottom: 0;
 }
-
 
 /* =========================================
    MESSAGE
@@ -563,105 +563,81 @@ button {
 
 .message-box {
     width: 100%;
-
     min-height: 160px;
-
     resize: vertical;
 
     border: 1px solid var(--border);
-
     border-radius: 13px;
-
     padding: 13px;
 
     font-family: inherit;
-
-    font-size: 13px;
-
+    font-size: var(--small);
     line-height: 1.5;
 
-    background: #fafafa;
-
+    background: var(--background);
     color: var(--text);
 }
 
-
 /* =========================================
-   TASKS
+   TASKS & HISTÓRICO
 ========================================= */
 
 .page-header {
     display: flex;
-
     gap: 12px;
-
     align-items: center;
-
     margin-bottom: 22px;
 }
 
 .page-header > span {
     width: 48px;
     height: 48px;
-
     border-radius: 15px;
-
     background: #eeecff;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    font-size: 22px;
+    font-size: var(--h1);
 }
 
 .page-header h2 {
-    font-size: 22px;
+    font-size: var(--h1);
+    font-weight: var(--weight-bold);
 }
 
 .page-header p {
     color: var(--text-light);
-
-    font-size: 13px;
-
+    font-size: var(--small);
+    line-height: 1.4;
     margin-top: 3px;
 }
 
 .task-card {
-    background: white;
-
+    background: var(--surface);
     border: 1px solid var(--border);
-
     border-radius: 17px;
-
     padding: 16px;
-
     margin-bottom: 12px;
 }
 
 .task-top {
     display: flex;
-
     justify-content: space-between;
-
     gap: 10px;
 }
 
 .task-top h3 {
-    font-size: 14px;
+    font-size: var(--body);
+    font-weight: var(--weight-bold);
 }
 
 .status {
     white-space: nowrap;
-
     padding: 5px 9px;
-
     border-radius: 20px;
-
-    font-size: 10px;
-
-    font-weight: 800;
+    font-size: var(--caption);
+    font-weight: var(--weight-extrabold);
 }
 
 .status.pending {
@@ -681,38 +657,28 @@ button {
 
 .task-date {
     color: var(--text-light);
-
-    font-size: 11px;
-
+    font-size: var(--caption);
     margin-top: 8px;
 }
 
 .task-controls {
     display: flex;
-
     gap: 8px;
-
     margin-top: 14px;
 }
 
 .task-controls button {
     flex: 1;
-
     padding: 9px;
-
     border-radius: 10px;
-
     border: 1px solid var(--border);
-
-    background: white;
-
+    background: var(--surface);
+    color: var(--text);
     cursor: pointer;
 
-    font-size: 11px;
-
-    font-weight: 700;
+    font-size: var(--caption);
+    font-weight: var(--weight-bold);
 }
-
 
 /* =========================================
    EMPTY STATE
@@ -720,115 +686,178 @@ button {
 
 .empty-state {
     text-align: center;
-
     padding: 50px 20px;
-
     color: var(--text-light);
 }
 
 .empty-state > div {
-    font-size: 45px;
-
+    font-size: 44px;
     margin-bottom: 12px;
 }
 
 .empty-state h3 {
     color: var(--text);
-
-    font-size: 17px;
-
+    font-size: var(--h3);
+    font-weight: var(--weight-bold);
     margin-bottom: 7px;
 }
 
 .empty-state p {
-    font-size: 13px;
-
+    font-size: var(--small);
     line-height: 1.5;
 }
 
-
 /* =========================================
-   PROFILE
+   PROFILE & AUTENTICAÇÃO FIREBASE
 ========================================= */
 
 .profile-card {
     text-align: center;
-
-    background: white;
-
+    background: var(--surface);
     border: 1px solid var(--border);
-
     border-radius: 20px;
-
     padding: 30px 20px;
-
     margin-bottom: 15px;
 }
 
 .profile-avatar {
     width: 72px;
     height: 72px;
-
     margin: 0 auto 15px;
-
     border-radius: 50%;
-
     background: #eeecff;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
+    font-size: var(--display);
+    overflow: hidden;
+}
 
-    font-size: 30px;
+.user-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .profile-card h2 {
-    font-size: 20px;
+    font-size: var(--h2);
+    font-weight: var(--weight-bold);
 }
 
 .profile-card p {
     color: var(--text-light);
-
-    font-size: 13px;
-
+    font-size: var(--small);
     line-height: 1.5;
-
     margin-top: 8px;
 }
 
-.settings-card {
-    background: white;
+.profile-card .user-email {
+    display: inline-block;
+    color: var(--primary);
+    font-size: var(--caption);
+    font-weight: var(--weight-semibold);
+    background: #f0efff;
+    padding: 4px 12px;
+    border-radius: 12px;
+    margin-top: 6px;
+}
 
+.auth-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: #e8f8ee;
+    color: #15803d;
+    font-size: var(--caption);
+    font-weight: var(--weight-semibold);
+}
+
+.google-login-button {
+    width: 100%;
+    margin-top: 18px;
     border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 13px 18px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: var(--body);
+    font-weight: var(--weight-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    transition: 0.2s;
+    min-height: 48px;
+}
 
+.google-login-button:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(108, 99, 255, 0.15);
+}
+
+.google-login-button:active {
+    transform: scale(0.98);
+}
+
+.logout-button {
+    width: 100%;
+    margin-top: 16px;
+    border: 1px solid #fecaca;
+    background: #fff5f5;
+    color: #dc2626;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: var(--small);
+    font-weight: var(--weight-bold);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.logout-button:hover {
+    background: #fee2e2;
+}
+
+.auth-error {
+    color: #dc2626;
+    font-size: var(--caption);
+    background: #fee2e2;
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin-top: 14px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.settings-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 17px;
-
     overflow: hidden;
 }
 
 .settings-card button {
     width: 100%;
-
     padding: 17px;
-
     border: 0;
-
-    background: white;
+    background: var(--surface);
 
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
 
     color: #dc2626;
-
-    font-weight: 700;
-
+    font-size: var(--small);
+    font-weight: var(--weight-bold);
     cursor: pointer;
 }
-
 
 /* =========================================
    BOTTOM NAVIGATION
@@ -836,58 +865,50 @@ button {
 
 .bottom-nav {
     position: fixed;
-
     bottom: 0;
     left: 0;
     right: 0;
-
     height: 76px;
 
-    background: rgba(255,255,255,0.96);
-
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(12px);
-
     border-top: 1px solid var(--border);
 
     display: flex;
-
     align-items: center;
     justify-content: space-around;
-
     z-index: 100;
-
     padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (prefers-color-scheme: dark) {
+    .bottom-nav {
+        background: rgba(30, 41, 59, 0.95);
+    }
 }
 
 .nav-item {
     width: 20%;
-
     height: 60px;
-
     border: 0;
-
     background: transparent;
-
     color: #9ca3af;
 
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
     justify-content: center;
-
     gap: 4px;
-
     cursor: pointer;
 }
 
 .nav-item span {
-    font-size: 19px;
+    font-size: 20px;
 }
 
 .nav-item small {
-    font-size: 9px;
+    font-size: var(--caption);
+    font-weight: var(--weight-medium);
 }
 
 .nav-item.active {
@@ -897,9 +918,7 @@ button {
 .nav-main {
     width: 58px;
     height: 58px;
-
     border-radius: 50%;
-
     border: 5px solid var(--background);
 
     background: linear-gradient(
@@ -909,22 +928,16 @@ button {
     );
 
     color: white;
-
-    font-size: 30px;
+    font-size: var(--display);
 
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     cursor: pointer;
 
     margin-top: -27px;
-
-    box-shadow:
-        0 8px 20px rgba(108,99,255,.35);
+    box-shadow: 0 8px 20px rgba(108, 99, 255, 0.35);
 }
-
 
 /* =========================================
    TOAST
@@ -932,49 +945,34 @@ button {
 
 .toast {
     position: fixed;
-
     left: 50%;
-
     bottom: 92px;
-
     transform: translate(-50%, 20px);
 
     background: #222;
-
     color: white;
-
     padding: 12px 18px;
-
     border-radius: 12px;
 
-    font-size: 12px;
-
+    font-size: var(--caption);
     opacity: 0;
-
     pointer-events: none;
-
     transition: 0.3s;
-
     z-index: 200;
-
     max-width: 90%;
-
     text-align: center;
 }
 
 .toast.show {
     opacity: 1;
-
     transform: translate(-50%, 0);
 }
-
 
 /* =========================================
    RESPONSIVIDADE
 ========================================= */
 
 @media (min-width: 700px) {
-
     body {
         padding-bottom: 0;
     }
@@ -982,12 +980,9 @@ button {
     .bottom-nav {
         width: 100%;
         max-width: 700px;
-
         left: 50%;
         right: auto;
-
         transform: translateX(-50%);
-
         border-radius: 20px 20px 0 0;
     }
 
@@ -997,14 +992,13 @@ button {
 }
 
 @media (max-width: 380px) {
-
     main {
         padding-left: 13px;
         padding-right: 13px;
     }
 
     .hero h2 {
-        font-size: 27px;
+        font-size: 1.75rem; /* 28px no mobile compacto */
     }
 
     .examples-grid {
@@ -1015,11 +1009,11 @@ button {
         padding: 13px;
     }
 }
+
 /* =========================================
    REQUISITOS DE UX — ZONA DO POLEGAR
 ========================================= */
 
-/* Mantém as ações principais na região inferior e amplia áreas de toque. */
 .main-button,
 .secondary-button,
 .nav-item,
@@ -1071,7 +1065,7 @@ button {
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.65), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
     animation: skeletonShimmer 1.15s infinite;
 }
 
@@ -1107,7 +1101,7 @@ button {
 
 .gesture-hint {
     color: var(--text-light);
-    font-size: 11px;
+    font-size: var(--caption);
     margin: -2px 2px 12px;
 }
 
@@ -1130,8 +1124,8 @@ button {
     gap: 3px;
     color: #b91c1c;
     background: linear-gradient(90deg, #fee2e2 0%, #fecaca 100%);
-    font-size: 11px;
-    font-weight: 800;
+    font-size: var(--caption);
+    font-weight: var(--weight-extrabold);
     pointer-events: none;
 }
 
@@ -1139,20 +1133,19 @@ button {
     display: block;
     font-size: 26px;
     line-height: 1;
-    opacity: calc(.35 + (var(--swipe-progress, 0) * .65));
-    transform: scale(calc(.72 + (var(--swipe-progress, 0) * .28))) rotate(calc(var(--swipe-progress, 0) * -8deg));
-    transition: transform .12s ease, opacity .12s ease;
+    opacity: calc(0.35 + (var(--swipe-progress, 0) * 0.65));
+    transform: scale(calc(0.72 + (var(--swipe-progress, 0) * 0.28))) rotate(calc(var(--swipe-progress, 0) * -8deg));
+    transition: transform 0.12s ease, opacity 0.12s ease;
 }
 
 .trash-label {
-    opacity: calc(.45 + (var(--swipe-progress, 0) * .55));
+    opacity: calc(0.45 + (var(--swipe-progress, 0) * 0.55));
 }
-
 
 .task-card.swipe-card {
     position: relative;
     margin-bottom: 0;
-    transition: transform .22s cubic-bezier(.22,1,.36,1), opacity .22s ease, box-shadow .22s ease;
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease, box-shadow 0.22s ease;
     will-change: transform;
     user-select: none;
 }
@@ -1162,7 +1155,7 @@ button {
 }
 
 .task-card.swipe-ready {
-    box-shadow: 0 8px 20px rgba(239,68,68,.14);
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.14);
 }
 
 .task-card.swipe-ready + * {
@@ -1184,24 +1177,26 @@ button {
 .nav-item,
 .nav-main,
 .icon-button,
-.task-controls button {
-    transition: transform .18s cubic-bezier(.22,1,.36,1), box-shadow .18s ease, opacity .18s ease, background .18s ease;
+.task-controls button,
+.google-login-button {
+    transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.18s ease, opacity 0.18s ease, background 0.18s ease;
 }
 
 .main-button:active,
 .secondary-button:active,
 .example-card:active,
 .icon-button:active,
-.task-controls button:active {
-    transform: scale(.97);
+.task-controls button:active,
+.google-login-button:active {
+    transform: scale(0.97);
 }
 
 .nav-item:active {
-    transform: translateY(2px) scale(.96);
+    transform: translateY(2px) scale(0.96);
 }
 
 .nav-main:active {
-    transform: translateY(2px) scale(.92);
+    transform: translateY(2px) scale(0.92);
 }
 
 .example-card:hover {
@@ -1211,17 +1206,17 @@ button {
 .result-card,
 .task-card,
 .example-card {
-    animation: contentEnter .35s cubic-bezier(.22,1,.36,1) both;
+    animation: contentEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .step {
-    animation: contentEnter .3s cubic-bezier(.22,1,.36,1) both;
+    animation: contentEnter 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.step:nth-child(2) { animation-delay: .04s; }
-.step:nth-child(3) { animation-delay: .08s; }
-.step:nth-child(4) { animation-delay: .12s; }
-.step:nth-child(5) { animation-delay: .16s; }
+.step:nth-child(2) { animation-delay: 0.04s; }
+.step:nth-child(3) { animation-delay: 0.08s; }
+.step:nth-child(4) { animation-delay: 0.12s; }
+.step:nth-child(5) { animation-delay: 0.16s; }
 
 @keyframes contentEnter {
     from { opacity: 0; transform: translateY(8px); }
@@ -1229,7 +1224,7 @@ button {
 }
 
 .action-success {
-    animation: actionSuccess .45s cubic-bezier(.22,1,.36,1);
+    animation: actionSuccess 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes actionSuccess {
@@ -1240,10 +1235,10 @@ button {
 
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
-        animation-duration: .01ms !important;
+        animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
+        transition-duration: 0.01ms !important;
     }
 }
 
@@ -1255,37 +1250,27 @@ button {
 .status-modal-backdrop {
     position: fixed;
     inset: 0;
-
     background: rgba(17, 17, 30, 0.45);
-
     display: flex;
     align-items: flex-end;
     justify-content: center;
-
     z-index: 300;
 }
 
 .status-modal-sheet {
     width: 100%;
     max-width: 700px;
-
     background: var(--surface);
-
     border-radius: 24px 24px 0 0;
-
     padding: 10px 22px calc(22px + env(safe-area-inset-bottom));
-
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.18);
 }
 
 .status-modal-handle {
     width: 40px;
     height: 5px;
-
     border-radius: 3px;
-
     background: var(--border);
-
     margin: 6px auto 18px;
 }
 
@@ -1294,41 +1279,33 @@ button {
     align-items: flex-start;
     justify-content: space-between;
     gap: 12px;
-
     margin-bottom: 22px;
 }
 
 .status-modal-label {
     display: block;
-
     color: var(--text-light);
-    font-size: 12px;
-
+    font-size: var(--caption);
     margin-bottom: 3px;
 }
 
 .status-modal-header h3 {
-    font-size: 17px;
-    line-height: 1.3;
+    font-size: var(--h3);
+    font-weight: var(--weight-bold);
+    line-height: var(--lh-heading);
 }
 
 .status-modal-close {
     flex-shrink: 0;
-
     width: 36px;
     height: 36px;
     min-height: 36px;
-
     border: 0;
     border-radius: 50%;
-
     background: #f0efff;
     color: var(--text-light);
-
-    font-size: 14px;
-
+    font-size: var(--small);
     cursor: pointer;
-
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
 }
@@ -1336,15 +1313,12 @@ button {
 .status-tracker {
     display: flex;
     align-items: flex-start;
-
     padding: 4px 4px 22px;
 }
 
 .status-tracker-item {
     position: relative;
-
     flex: 1;
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1353,19 +1327,14 @@ button {
 .status-tracker-node {
     width: 44px;
     height: 44px;
-
     border-radius: 50%;
-
     background: #f0efff;
 
     display: flex;
     align-items: center;
     justify-content: center;
-
-    font-size: 19px;
-
+    font-size: 20px;
     overflow: hidden;
-
     z-index: 1;
 }
 
@@ -1382,10 +1351,8 @@ button {
     position: absolute;
     top: 21px;
     left: 50%;
-
     width: 100%;
     height: 3px;
-
     background: var(--border);
 }
 
@@ -1395,11 +1362,9 @@ button {
 
 .status-tracker-label {
     margin-top: 8px;
-
-    font-size: 11px;
-    font-weight: 700;
+    font-size: var(--caption);
+    font-weight: var(--weight-bold);
     text-align: center;
-
     color: var(--text-light);
 }
 
@@ -1415,7 +1380,7 @@ button {
 
 .status-modal-hint {
     color: var(--text-light);
-    font-size: 12px;
+    font-size: var(--caption);
     text-align: center;
 }
 

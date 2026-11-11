@@ -1,4 +1,4 @@
-const CACHE_NAME = "resolve-pra-mim-v3";
+const CACHE_NAME = "resolve-pra-mim-v4";
 
 const FILES_TO_CACHE = [
     "./",
@@ -6,6 +6,7 @@ const FILES_TO_CACHE = [
     "./style.css",
     "./script.js",
     "./auth.js",
+    "./chatbot.js",
     "./status-modal.js",
     "./success-check.json",
     "./manifest.json",

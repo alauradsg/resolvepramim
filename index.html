@@ -80,6 +80,64 @@
             </div>
 
 
+            <!-- ASSISTENTE IA WEBGPU (ATIVIDADE A2.2) -->
+            <div class="ai-chatbot-section">
+                <div class="ai-chatbot-header">
+                    <span class="ai-badge">🤖 WebGPU Local · Hugging Face</span>
+                    <h3>Dúvidas sobre Direitos? Pergunte à IA</h3>
+                    <p>Processamento 100% no seu navegador sem enviar dados a servidores.</p>
+                </div>
+
+                <!-- FORMULÁRIO DE UMA LINHA -->
+                <form id="aiChatForm" class="ai-chat-form">
+                    <input
+                        type="text"
+                        id="aiInput"
+                        placeholder="Ex.: Qual o prazo de resposta do SAC?"
+                        autocomplete="off"
+                        required
+                    />
+                    <button type="submit" id="aiSendBtn" class="ai-send-btn">
+                        <span>Perguntar</span>
+                        <span class="ai-btn-icon">⚡</span>
+                    </button>
+                </form>
+
+                <!-- BARRA DE STATUS E PROGRESSO -->
+                <div id="aiStatus" class="ai-status">
+                    <span class="ai-status-indicator" id="aiStatusDot"></span>
+                    <span id="aiStatusText">Clique em Perguntar ou em uma sugestão abaixo</span>
+                    <div id="aiProgressBarWrap" class="ai-progress-bar-wrap" style="display: none;">
+                        <div id="aiProgressBar" class="ai-progress-bar"></div>
+                    </div>
+                </div>
+
+                <!-- CHIPS DE SUGESTÃO RÁPIDA (PERGUNTAS DE TESTE DA AULA) -->
+                <div class="ai-chips">
+                    <button type="button" class="ai-chip" data-query="Qual o prazo máximo para a operadora responder uma reclamação no SAC?">
+                        ⏱️ Prazo do SAC
+                    </button>
+                    <button type="button" class="ai-chip" data-query="Fui cobrado a mais na fatura da internet. Tenho direito a devolução em dobro?">
+                        💰 Cobrança em Dobro
+                    </button>
+                    <button type="button" class="ai-chip" data-query="Posso cancelar meu plano antes de 12 meses sem pagar multa de fidelidade?">
+                        🚫 Cancelar sem Multa
+                    </button>
+                </div>
+
+                <!-- BALÕES DE MENSAGENS -->
+                <div id="aiChatBox" class="ai-chat-box" style="display: none;">
+                    <div class="ai-chat-messages" id="aiChatMessages"></div>
+                    <div id="aiTyping" class="ai-typing" style="display: none;">
+                        <span class="dot"></span><span class="dot"></span><span class="dot"></span> IA processando na GPU...
+                    </div>
+                    <div class="ai-chat-footer">
+                        <button type="button" id="aiClearBtn" class="ai-clear-btn">Limpar conversa</button>
+                    </div>
+                </div>
+            </div>
+
+
             <!-- EXEMPLOS -->
             <div class="section-title">
                 <h3>O que você pode resolver?</h3>
@@ -386,6 +444,7 @@
 
     <script src="script.js"></script>
     <script type="module" src="auth.js"></script>
+    <script type="module" src="chatbot.js"></script>
 
     <!-- React + Framer Motion + Lottie via CDN (sem build), usados apenas no modal de status -->
     <script type="importmap">

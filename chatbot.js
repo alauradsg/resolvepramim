@@ -1,6 +1,6 @@
 // ============================================================
 // RESOLVE PRA MIM - ASSISTENTE IA LOCAL (WEBGPU + TRANSFORMERS.JS)
-// Atividade A2.2: Execução de SLM no navegador sem servidor
+// Atividade A2.2: Execução de SLM no navegador com RAG Vetorial
 // Modelo: onnx-community/Qwen2.5-0.5B-Instruct
 // ============================================================
 
@@ -32,69 +32,149 @@ let isLoadingModel = false;
 let isWebGPU = false;
 
 // ============================================================
-// BASE DE CONHECIMENTO RETROALIMENTADA (RAG ANTI-ALUCINAÇÃO)
-// Chunks curtos e verificados de direitos do consumidor no Brasil
+// BASE DE CONHECIMENTO VETORIZADA (CHUNKING + BUSCA SEMÂNTICA)
+// Quebra, vetoriza e busca fatos do CDC / Anatel sem alucinar
 // ============================================================
 const KNOWLEDGE_BASE = [
     {
         topic: "prazo_sac",
-        keywords: ["prazo", "sac", "operadora", "responder", "reclamação", "reclamacao", "tempo", "dias"],
-        fact: "De acordo com o Decreto do SAC (nº 11.034/2022), o prazo máximo para a operadora ou empresa responder formalmente a uma reclamação é de até 5 (cinco) dias úteis. A empresa é obrigada a fornecer número de protocolo no início do contato."
+        keywords: ["prazo", "sac", "operadora", "responder", "reclamacao", "reclamação", "tempo", "dias", "protocolo", "atendimento", "demora"],
+        requiredTerms: ["5", "cinco", "dias"],
+        fact: "Pelo Decreto do SAC (nº 11.034/2022), a operadora ou empresa tem o prazo máximo de até 5 (cinco) dias úteis para responder conclusivamente à sua reclamação, sendo obrigada a fornecer o número de protocolo no início do atendimento.",
+        directAnswer: "Pelo Decreto do SAC (nº 11.034/2022), a operadora tem o prazo máximo de 5 dias úteis para dar uma resposta conclusiva à sua reclamação. Exija e guarde sempre o número do protocolo fornecido no início do atendimento."
     },
     {
         topic: "cobranca_indevida",
-        keywords: ["cobrança", "cobranca", "indevida", "dobro", "dinheiro de volta", "estorno", "paguei", "cartão", "fatura"],
-        fact: "Conforme o Artigo 42 do Código de Defesa do Consumidor (CDC), o consumidor cobrado indevidamente que tiver pago o valor a mais tem direito à repetição do indébito (devolução em dobro do valor pago em excesso), acrescido de juros e correção monetária, salvo engano justificável."
+        keywords: ["cobranca", "cobrança", "indevida", "dobro", "dinheiro", "volta", "estorno", "paguei", "cartao", "cartão", "fatura", "cobrado", "mais", "errado", "reembolso", "devolucao", "devolução"],
+        requiredTerms: ["dobro", "42"],
+        fact: "Segundo o Artigo 42 do Código de Defesa do Consumidor (CDC), quando o consumidor é cobrado em quantia indevida e já realizou o pagamento, tem direito à repetição do indébito: a empresa deve devolver em dobro o valor pago em excesso, acrescido de correção monetária e juros legais.",
+        directAnswer: "Sim! Pelo Artigo 42 do Código de Defesa do Consumidor (CDC), se você já pagou um valor cobrado indevidamente na fatura, a empresa é obrigada a devolver em dobro o que foi cobrado a mais, com correção monetária e juros."
     },
     {
         topic: "cancelamento_fidelidade",
-        keywords: ["cancelar", "cancelamento", "multa", "fidelidade", "contrato", "sair", "internet", "plano"],
-        fact: "O cancelamento de planos ou serviços é direito imediato do consumidor. A multa de fidelidade só é legal se a operadora concedeu benefício comprovado na adesão, e o valor da multa DEVE ser estritamente proporcional ao tempo restante. Se o serviço tiver falhas frequentes ou má qualidade comprovada, o cancelamento é isento de multa."
+        keywords: ["cancelar", "cancelamento", "multa", "fidelidade", "contrato", "sair", "internet", "plano", "12 meses", "carencia", "carência", "rescindir"],
+        requiredTerms: ["multa", "proporcional", "falha", "direito"],
+        fact: "De acordo com a Anatel e o CDC, o cancelamento do plano é um direito imediato do consumidor. Se houver falha na prestação do serviço ou queda constante de sinal, você pode cancelar sem pagar nenhuma multa de fidelidade, mesmo antes de 12 meses. Caso o cancelamento seja por escolha própria sem falha da empresa, a multa deve ser apenas proporcional aos meses restantes.",
+        directAnswer: "Sim, se a operadora estiver prestando um serviço com falhas, lentidão ou quedas constantes, a lei garante o cancelamento imediato sem cobrança de multa de fidelidade. Caso não haja falha técnica da empresa, a multa nunca pode ser integral e deve ser calculada apenas proporcionalmente aos meses restantes do contrato."
     },
     {
         topic: "arrependimento",
-        keywords: ["arrependimento", "desistir", "7 dias", "sete dias", "compra online", "internet", "telefone"],
-        fact: "Conforme o Artigo 49 do CDC, em compras ou contratações feitas fora do estabelecimento comercial (pela internet, aplicativo ou telefone), o consumidor tem direito de arrependimento em até 7 dias corridos a partir da assinatura ou recebimento, com direito a reembolso total e imediato de qualquer valor pago."
+        keywords: ["arrependimento", "desistir", "7 dias", "sete dias", "compra", "online", "internet", "telefone", "devolver", "produto"],
+        requiredTerms: ["7", "sete", "49"],
+        fact: "Pelo Artigo 49 do Código de Defesa do Consumidor (CDC), em compras ou contratações feitas fora da loja física (pela internet ou telefone), o consumidor tem até 7 dias corridos, contados do recebimento ou assinatura, para desistir e receber reembolso total, inclusive do frete.",
+        directAnswer: "Pelo Artigo 49 do CDC (Direito de Arrependimento), você tem até 7 dias corridos a partir do recebimento do produto ou assinatura do serviço contratado pela internet ou telefone para cancelar sem custo e receber 100% do valor pago de volta."
     },
     {
         topic: "segunda_via",
-        keywords: ["segunda via", "2 via", "documento", "certidão", "rg", "cpf", "fatura antiga"],
-        fact: "Para solicitar segunda via de fatura ou boleto, as concessionárias e operadoras são obrigadas a fornecer o documento gratuitamente por canal digital. Para documentos civis (RG/CNH/Certidões), a solicitação deve ser feita no órgão estadual (Poupatempo, Detran ou Cartório), podendo haver taxa pública de emissão."
+        keywords: ["segunda via", "2 via", "documento", "certidao", "certidão", "rg", "cpf", "boleto", "conta"],
+        requiredTerms: ["segunda via", "gratuita", "órgão", "digital"],
+        fact: "Empresas e concessionárias não podem cobrar taxa para emissão de segunda via de faturas ou boletos por canais digitais (site ou aplicativo). Já para documentos oficiais (RG, CNH, Certidões), o pedido deve ser feito diretamente no portal do órgão emissor ou Poupatempo.",
+        directAnswer: "A emissão de segunda via de contas e faturas pelos canais digitais (app ou site da empresa) é gratuita por lei. Se precisar de segunda via de documentos oficiais (como RG ou CNH), solicite diretamente pelo portal oficial do governo ou Poupatempo."
     }
 ];
 
-// Busca o contexto mais relevante para ancorar o modelo (Grounding / Busca Vetorial Conceitual)
-function retrieveKnowledgeContext(userQuery) {
-    const q = userQuery.toLowerCase();
-    let bestMatch = null;
-    let maxHits = 0;
-
-    for (const item of KNOWLEDGE_BASE) {
-        let hits = 0;
-        for (const kw of item.keywords) {
-            if (q.includes(kw)) hits++;
-        }
-        if (hits > maxHits) {
-            maxHits = hits;
-            bestMatch = item.fact;
-        }
-    }
-
-    return bestMatch || "";
+// ============================================================
+// ETAPA 1: QUEBRAR (TOKENIZAR) E VETORIZAR NO NAVEGADOR
+// ============================================================
+function tokenizeAndNormalize(text) {
+    return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\w\s]/g, " ")
+        .split(/\s+/)
+        .filter(w => w.length > 1);
 }
 
-// Histórico de Conversa com Prompt de Sistema
-const BASE_SYSTEM_PROMPT = 
-    "Você é o assistente oficial de direitos do consumidor do aplicativo 'Resolve Pra Mim' (Brasil). " +
-    "Sua missão é responder dúvidas de forma concisa (máximo 2 a 3 frases curtas), educada e 100% precisa. " +
-    "DIRETRIZES ANTI-ALUCINAÇÃO INVIOLÁVEIS: " +
-    "1. Baseie-se exclusivamente nas leis brasileiras vigentes (CDC e Decreto do SAC). " +
-    "2. Se você receber um 'Fato Verificado', use-o como verdade absoluta. " +
-    "3. Jamais invente prazos, leis ou artigos que não existem. Se a pergunta for sobre outro assunto que você não conhece, diga: 'Para este caso específico, recomendo consultar o Procon ou o site oficial do órgão competente.'";
+function buildVocabulary() {
+    const vocab = new Set();
+    for (const item of KNOWLEDGE_BASE) {
+        tokenizeAndNormalize(item.fact).forEach(t => vocab.add(t));
+        item.keywords.forEach(kw => tokenizeAndNormalize(kw).forEach(t => vocab.add(t)));
+    }
+    return Array.from(vocab);
+}
 
-let chatHistory = [
-    { role: "system", content: BASE_SYSTEM_PROMPT }
-];
+const VOCABULARY = buildVocabulary();
+
+function textToVector(text) {
+    const tokens = tokenizeAndNormalize(text);
+    return VOCABULARY.map(term => tokens.filter(t => t === term || t.includes(term) || term.includes(t)).length);
+}
+
+function cosineSimilarity(vecA, vecB) {
+    let dot = 0, normA = 0, normB = 0;
+    for (let i = 0; i < vecA.length; i++) {
+        dot += vecA[i] * vecB[i];
+        normA += vecA[i] * vecA[i];
+        normB += vecB[i] * vecB[i];
+    }
+    if (normA === 0 || normB === 0) return 0;
+    return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
+// Busca Semântica Vetorial sobre os Chunks
+function retrieveKnowledgeItem(userQuery) {
+    const queryVec = textToVector(userQuery);
+    const queryNorm = userQuery.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    let bestItem = null;
+    let bestScore = 0;
+
+    for (const item of KNOWLEDGE_BASE) {
+        const docText = item.keywords.join(" ") + " " + item.fact;
+        const docVec = textToVector(docText);
+        let score = cosineSimilarity(queryVec, docVec);
+
+        // Reforço por palavras-chave exatas
+        for (const kw of item.keywords) {
+            const kwNorm = kw.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            if (queryNorm.includes(kwNorm)) {
+                score += 0.25;
+            }
+        }
+
+        if (score > bestScore) {
+            bestScore = score;
+            bestItem = item;
+        }
+    }
+
+    return bestScore >= 0.2 ? { item: bestItem, score: Math.min(0.99, bestScore) } : null;
+}
+
+// ============================================================
+// LIMPEZA E VALIDAÇÃO ANTI-ALUCINAÇÃO PÓS-GERAÇÃO
+// Remove prefixos ("Aqui está a resposta:") e corrige falhas
+// ============================================================
+function cleanAndValidateOutput(rawText, matchedItem) {
+    let cleaned = String(rawText || "").trim();
+
+    // 1. Remove qualquer prefixo meta como "Aqui está a resposta:", "Resposta:", "Claro:", etc.
+    cleaned = cleaned
+        .replace(/^(aqui\s+est[áa]\s+a\s+resposta|resposta|orienta[çc][ãa]o|claro|com\s+certeza|ol[áa]|segundo\s+o\s+fato\s+legal|com\s+base\s+no\s+contexto)[\s:.,!-]*/i, "")
+        .replace(/^["'«»]+|["'«»]+$/g, "")
+        .trim();
+
+    // Garante primeira letra maiúscula
+    if (cleaned.length > 0) {
+        cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+    }
+
+    // 2. Verifica se o SLM de 0.5B gerou palavras truncadas/alucinadas (ex.: "Opraca", caracteres estranhos)
+    // ou se omitiu a informação jurídica essencial do chunk recuperado
+    if (matchedItem) {
+        const lower = cleaned.toLowerCase();
+        const hasWeirdTokens = /opraca|consumidora?\s+deve\s+pagar|[^\x00-\x7FÀ-ÿ\s.,!?;:()ºª°/\-%$]/i.test(cleaned);
+        const hasRequiredTerm = matchedItem.requiredTerms.some(term => lower.includes(term));
+
+        if (!cleaned || cleaned.length < 30 || hasWeirdTokens || !hasRequiredTerm) {
+            return matchedItem.directAnswer;
+        }
+    }
+
+    return cleaned;
+}
 
 // ============================================================
 // ATUALIZAÇÃO VISUAL DE STATUS & PROGRESSO
@@ -209,7 +289,7 @@ async function initModel() {
 }
 
 // ============================================================
-// GERAÇÃO DE RESPOSTAS (ANTI-ALUCINAÇÃO COM RAG CONTEXT)
+// GERAÇÃO DE RESPOSTAS (BUSCA VETORIAL + INFERÊNCIA WEBGPU)
 // ============================================================
 async function askAI(userQuery) {
     const text = userQuery.trim();
@@ -230,48 +310,55 @@ async function askAI(userQuery) {
     if (aiInput) aiInput.disabled = true;
     if (aiTyping) aiTyping.style.display = "flex";
 
-    // Busca fato verificado no banco de conhecimento local (RAG)
-    const verifiedFact = retrieveKnowledgeContext(text);
-    
-    // Constrói a mensagem instruindo o modelo a usar a verdade do fato verificado
-    let promptWithContext = text;
-    if (verifiedFact) {
-        promptWithContext = `[Fato legal verificado no Brasil]: "${verifiedFact}"\nPergunta do cidadão: "${text}"\nResponda em 1 a 2 frases claras e precisas usando o fato legal acima.`;
+    // Etapa 1: Quebra, vetoriza e busca o contexto mais próximo no navegador
+    const retrieval = retrieveKnowledgeItem(text);
+    const matchedItem = retrieval ? retrieval.item : null;
+
+    if (matchedItem) {
+        const simPct = Math.round(retrieval.score * 100);
+        setAIStatus(`Busca vetorial concluída (${simPct}% relevância) · Gerando via ${isWebGPU ? "WebGPU ⚡" : "CPU"}...`, "loading", false);
     }
 
-    chatHistory.push({ role: "user", content: promptWithContext });
+    // Etapa 2: Monta mensagens limpas com 1-shot example para impedir "Aqui está a resposta:"
+    // e sem repetition_penalty agressivo para não distorcer palavras como "operadora" em "Opraca"
+    const systemContent = matchedItem
+        ? "Você é o assistente jurídico do app 'Resolve Pra Mim'. Responda diretamente à pergunta do usuário em português correto, usando apenas a referência legal abaixo. Proibido usar frases introdutórias como 'Aqui está a resposta:'.\nReferência legal: " + matchedItem.directAnswer
+        : "Você é o assistente jurídico do app 'Resolve Pra Mim' (Brasil). Responda diretamente em português claro e conciso (máximo 2 frases) com base no Código de Defesa do Consumidor. Proibido começar com 'Aqui está a resposta:'.";
+
+    const inferenceMessages = [
+        { role: "system", content: systemContent },
+        { role: "user", content: "Qual o prazo de resposta do SAC?" },
+        { role: "assistant", content: "Pelo Decreto do SAC (nº 11.034/2022), a empresa tem até 5 dias úteis para responder conclusivamente à sua reclamação." },
+        { role: "user", content: text }
+    ];
 
     try {
-        const output = await generator(chatHistory, {
-            max_new_tokens: 180,
-            temperature: 0.5,
-            top_p: 0.85,
-            repetition_penalty: 1.15,
-            do_sample: true
+        const output = await generator(inferenceMessages, {
+            max_new_tokens: 110,
+            do_sample: false // Decodificação determinística (evita alucinação de subpalavras como "Opraca")
         });
 
         const generated = output?.[0]?.generated_text;
-        let answer = "";
+        let rawAnswer = "";
 
         if (Array.isArray(generated)) {
             const last = generated[generated.length - 1];
-            answer = typeof last === "string" ? last : last?.content || "";
+            rawAnswer = typeof last === "string" ? last : last?.content || "";
         } else {
-            answer = String(generated || "");
+            rawAnswer = String(generated || "");
         }
 
-        answer = answer.trim();
-        if (!answer) {
-            answer = "Não consegui gerar uma resposta precisa para essa consulta.";
-        }
+        const finalAnswer = cleanAndValidateOutput(rawAnswer, matchedItem);
+        appendMessage("assistant", finalAnswer);
 
-        // Armazena no histórico
-        chatHistory.push({ role: "assistant", content: answer });
-        appendMessage("assistant", answer);
+        setAIStatus(
+            `IA Pronta · ${isWebGPU ? "Aceleração WebGPU ⚡" : "Modo CPU/WASM"} (sem servidor)`,
+            "ready",
+            false
+        );
 
     } catch (err) {
         console.error("Erro na inferência da IA:", err);
-        chatHistory.pop();
         appendMessage("assistant", "⚠️ Ocorreu um erro ao processar sua resposta na GPU/CPU local. Tente novamente.");
     } finally {
         if (aiTyping) aiTyping.style.display = "none";
@@ -306,7 +393,6 @@ aiChips.forEach(chip => {
 // Limpar conversa
 if (aiClearBtn) {
     aiClearBtn.addEventListener("click", () => {
-        chatHistory = [{ role: "system", content: BASE_SYSTEM_PROMPT }];
         if (aiChatMessages) aiChatMessages.innerHTML = "";
         if (aiChatBox) aiChatBox.style.display = "none";
         if (aiInput) {
@@ -316,4 +402,3 @@ if (aiClearBtn) {
         setAIStatus(generator ? (isWebGPU ? "IA Pronta · WebGPU ⚡" : "IA Pronta · CPU/WASM") : "Conversa limpa", "ready", false);
     });
 }
-

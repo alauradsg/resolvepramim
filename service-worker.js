@@ -1,4 +1,4 @@
-const CACHE_NAME = "resolve-pra-mim-v5";
+const CACHE_NAME = "resolve-pra-mim-v6";
 
 const FILES_TO_CACHE = [
     "./",

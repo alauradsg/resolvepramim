@@ -60,126 +60,147 @@
             </div>
 
 
-            <!-- CAMPO DE PROBLEMA -->
-            <div class="problem-box">
-
-                <label for="problemInput">
-                    Descreva seu problema
-                </label>
-
-                <textarea
-                    id="problemInput"
-                    placeholder="Ex.: Preciso cancelar minha internet..."
-                    rows="4"></textarea>
-
-                <button class="main-button" id="solveButton">
-                    <span>✨</span>
-                    Resolver pra mim
+            <!-- SELETOR DE MODO (JÁ SEI O QUE RESOLVER vs. ESTOU EM DÚVIDA) -->
+            <div class="mode-selector" role="tablist" aria-label="Escolha como deseja resolver">
+                <button type="button" class="mode-tab active" id="tabSolveMode" role="tab" aria-selected="true" aria-controls="modeSolveContainer">
+                    <span>🎯</span>
+                    <strong>Já sei o que resolver</strong>
                 </button>
+                <button type="button" class="mode-tab" id="tabAiMode" role="tab" aria-selected="false" aria-controls="modeAiContainer">
+                    <span>🤖</span>
+                    <strong>Estou em dúvida (IA)</strong>
+                </button>
+            </div>
+
+
+            <!-- MODO 1: RESOLUÇÃO DIRETA DE BUROCRACIAS -->
+            <div id="modeSolveContainer" class="mode-content active" role="tabpanel" aria-labelledby="tabSolveMode">
+
+                <!-- CAMPO DE PROBLEMA -->
+                <div class="problem-box">
+
+                    <label for="problemInput">
+                        Descreva seu problema
+                    </label>
+
+                    <textarea
+                        id="problemInput"
+                        placeholder="Ex.: Preciso cancelar minha internet..."
+                        rows="4"></textarea>
+
+                    <button class="main-button" id="solveButton">
+                        <span>✨</span>
+                        Resolver pra mim
+                    </button>
+
+                </div>
+
+                <!-- EXEMPLOS -->
+                <div class="section-title">
+                    <h3>O que você pode resolver?</h3>
+                </div>
+
+                <div class="examples-grid">
+
+                    <button class="example-card" data-problem="Preciso cancelar minha internet">
+                        <span class="example-icon">🌐</span>
+                        <strong>Cancelar internet</strong>
+                        <small>Saiba como cancelar seu plano</small>
+                    </button>
+
+                    <button class="example-card" data-problem="Preciso pedir segunda via de um documento">
+                        <span class="example-icon">📄</span>
+                        <strong>Segunda via</strong>
+                        <small>Descubra como solicitar</small>
+                    </button>
+
+                    <button class="example-card" data-problem="Quero reclamar de uma cobrança">
+                        <span class="example-icon">💰</span>
+                        <strong>Reclamar de cobrança</strong>
+                        <small>Prepare sua reclamação</small>
+                    </button>
+
+                    <button class="example-card" data-problem="Quero cancelar uma compra">
+                        <span class="example-icon">🛒</span>
+                        <strong>Cancelar compra</strong>
+                        <small>Veja os próximos passos</small>
+                    </button>
+
+                    <button class="example-card" data-problem="Preciso resolver algo no governo">
+                        <span class="example-icon">🏛️</span>
+                        <strong>Serviço público</strong>
+                        <small>Organize sua solicitação</small>
+                    </button>
+
+                    <button class="example-card" data-problem="Quero fazer uma reclamação">
+                        <span class="example-icon">📢</span>
+                        <strong>Fazer reclamação</strong>
+                        <small>Crie sua mensagem</small>
+                    </button>
+
+                </div>
 
             </div>
 
 
-            <!-- ASSISTENTE IA WEBGPU (ATIVIDADE A2.2) -->
-            <div class="ai-chatbot-section">
-                <div class="ai-chatbot-header">
-                    <span class="ai-badge">🤖 WebGPU Local · Hugging Face</span>
-                    <h3>Dúvidas sobre Direitos? Pergunte à IA</h3>
-                    <p>Processamento 100% no seu navegador sem enviar dados a servidores.</p>
-                </div>
+            <!-- MODO 2: ASSISTENTE IA WEBGPU (ATIVIDADE A2.2) -->
+            <div id="modeAiContainer" class="mode-content" role="tabpanel" aria-labelledby="tabAiMode">
 
-                <!-- FORMULÁRIO DE UMA LINHA -->
-                <form id="aiChatForm" class="ai-chat-form">
-                    <input
-                        type="text"
-                        id="aiInput"
-                        placeholder="Ex.: Qual o prazo de resposta do SAC?"
-                        autocomplete="off"
-                        required
-                    />
-                    <button type="submit" id="aiSendBtn" class="ai-send-btn">
-                        <span>Perguntar</span>
-                        <span class="ai-btn-icon">⚡</span>
-                    </button>
-                </form>
+                <div class="ai-chatbot-section">
+                    <div class="ai-chatbot-header">
+                        <span class="ai-badge">🤖 WebGPU Local · Hugging Face</span>
+                        <h3>Dúvidas sobre Direitos? Pergunte à IA</h3>
+                        <p>Processamento 100% no seu navegador sem enviar dados a servidores.</p>
+                    </div>
 
-                <!-- BARRA DE STATUS E PROGRESSO -->
-                <div id="aiStatus" class="ai-status">
-                    <span class="ai-status-indicator" id="aiStatusDot"></span>
-                    <span id="aiStatusText">Clique em Perguntar ou em uma sugestão abaixo</span>
-                    <div id="aiProgressBarWrap" class="ai-progress-bar-wrap" style="display: none;">
-                        <div id="aiProgressBar" class="ai-progress-bar"></div>
+                    <!-- FORMULÁRIO DE UMA LINHA -->
+                    <form id="aiChatForm" class="ai-chat-form">
+                        <input
+                            type="text"
+                            id="aiInput"
+                            placeholder="Ex.: Qual o prazo de resposta do SAC?"
+                            autocomplete="off"
+                            required
+                        />
+                        <button type="submit" id="aiSendBtn" class="ai-send-btn">
+                            <span>Perguntar</span>
+                            <span class="ai-btn-icon">⚡</span>
+                        </button>
+                    </form>
+
+                    <!-- BARRA DE STATUS E PROGRESSO -->
+                    <div id="aiStatus" class="ai-status">
+                        <span class="ai-status-indicator" id="aiStatusDot"></span>
+                        <span id="aiStatusText">Clique em Perguntar ou em uma sugestão abaixo</span>
+                        <div id="aiProgressBarWrap" class="ai-progress-bar-wrap" style="display: none;">
+                            <div id="aiProgressBar" class="ai-progress-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- CHIPS DE SUGESTÃO RÁPIDA (PERGUNTAS DE TESTE DA AULA) -->
+                    <div class="ai-chips">
+                        <button type="button" class="ai-chip" data-query="Qual o prazo máximo para a operadora responder uma reclamação no SAC?">
+                            ⏱️ Prazo do SAC
+                        </button>
+                        <button type="button" class="ai-chip" data-query="Fui cobrado a mais na fatura da internet. Tenho direito a devolução em dobro?">
+                            💰 Cobrança em Dobro
+                        </button>
+                        <button type="button" class="ai-chip" data-query="Posso cancelar meu plano antes de 12 meses sem pagar multa de fidelidade?">
+                            🚫 Cancelar sem Multa
+                        </button>
+                    </div>
+
+                    <!-- BALÕES DE MENSAGENS -->
+                    <div id="aiChatBox" class="ai-chat-box" style="display: none;">
+                        <div class="ai-chat-messages" id="aiChatMessages"></div>
+                        <div id="aiTyping" class="ai-typing" style="display: none;">
+                            <span class="dot"></span><span class="dot"></span><span class="dot"></span> IA processando na GPU...
+                        </div>
+                        <div class="ai-chat-footer">
+                            <button type="button" id="aiClearBtn" class="ai-clear-btn">Limpar conversa</button>
+                        </div>
                     </div>
                 </div>
-
-                <!-- CHIPS DE SUGESTÃO RÁPIDA (PERGUNTAS DE TESTE DA AULA) -->
-                <div class="ai-chips">
-                    <button type="button" class="ai-chip" data-query="Qual o prazo máximo para a operadora responder uma reclamação no SAC?">
-                        ⏱️ Prazo do SAC
-                    </button>
-                    <button type="button" class="ai-chip" data-query="Fui cobrado a mais na fatura da internet. Tenho direito a devolução em dobro?">
-                        💰 Cobrança em Dobro
-                    </button>
-                    <button type="button" class="ai-chip" data-query="Posso cancelar meu plano antes de 12 meses sem pagar multa de fidelidade?">
-                        🚫 Cancelar sem Multa
-                    </button>
-                </div>
-
-                <!-- BALÕES DE MENSAGENS -->
-                <div id="aiChatBox" class="ai-chat-box" style="display: none;">
-                    <div class="ai-chat-messages" id="aiChatMessages"></div>
-                    <div id="aiTyping" class="ai-typing" style="display: none;">
-                        <span class="dot"></span><span class="dot"></span><span class="dot"></span> IA processando na GPU...
-                    </div>
-                    <div class="ai-chat-footer">
-                        <button type="button" id="aiClearBtn" class="ai-clear-btn">Limpar conversa</button>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- EXEMPLOS -->
-            <div class="section-title">
-                <h3>O que você pode resolver?</h3>
-            </div>
-
-            <div class="examples-grid">
-
-                <button class="example-card" data-problem="Preciso cancelar minha internet">
-                    <span class="example-icon">🌐</span>
-                    <strong>Cancelar internet</strong>
-                    <small>Saiba como cancelar seu plano</small>
-                </button>
-
-                <button class="example-card" data-problem="Preciso pedir segunda via de um documento">
-                    <span class="example-icon">📄</span>
-                    <strong>Segunda via</strong>
-                    <small>Descubra como solicitar</small>
-                </button>
-
-                <button class="example-card" data-problem="Quero reclamar de uma cobrança">
-                    <span class="example-icon">💰</span>
-                    <strong>Reclamar de cobrança</strong>
-                    <small>Prepare sua reclamação</small>
-                </button>
-
-                <button class="example-card" data-problem="Quero cancelar uma compra">
-                    <span class="example-icon">🛒</span>
-                    <strong>Cancelar compra</strong>
-                    <small>Veja os próximos passos</small>
-                </button>
-
-                <button class="example-card" data-problem="Preciso resolver algo no governo">
-                    <span class="example-icon">🏛️</span>
-                    <strong>Serviço público</strong>
-                    <small>Organize sua solicitação</small>
-                </button>
-
-                <button class="example-card" data-problem="Quero fazer uma reclamação">
-                    <span class="example-icon">📢</span>
-                    <strong>Fazer reclamação</strong>
-                    <small>Crie sua mensagem</small>
-                </button>
 
             </div>
 

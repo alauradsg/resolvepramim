@@ -70,6 +70,8 @@
 
 html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 body {
@@ -90,6 +92,8 @@ body {
 
     min-height: 100vh;
     padding-bottom: 90px;
+    overflow-x: hidden;
+    max-width: 100%;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -1392,6 +1396,78 @@ button {
 }
 
 /* =========================================
+   SELETOR DE MODO (JÁ SEI vs. DÚVIDA IA)
+========================================= */
+
+.mode-selector {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    padding: 4px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    gap: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.mode-tab {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    border: none;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--text-light);
+    font-size: var(--small);
+    font-family: inherit;
+    font-weight: var(--weight-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0 10px;
+}
+
+.mode-tab strong {
+    font-weight: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mode-tab.active {
+    background: var(--primary);
+    color: #ffffff;
+    font-weight: var(--weight-bold);
+    box-shadow: 0 3px 10px rgba(108, 99, 255, 0.28);
+}
+
+.mode-content {
+    display: none;
+    width: 100%;
+}
+
+.mode-content.active {
+    display: block;
+    animation: modeFadeIn 0.22s ease-out;
+}
+
+@keyframes modeFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
    ASSISTENTE IA WEBGPU (ATIVIDADE A2.2)
 ========================================= */
 
@@ -1400,8 +1476,12 @@ button {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 18px 16px;
-    margin: 20px 0;
+    margin: 0 0 20px 0;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .ai-chatbot-header {
@@ -1432,17 +1512,22 @@ button {
     line-height: var(--lh-tight);
 }
 
-/* Formulário de uma linha */
+/* Formulário de uma linha (Protegido contra Overflow Mobile) */
 .ai-chat-form {
     display: flex;
     gap: 8px;
     align-items: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .ai-chat-form input {
     flex: 1;
+    min-width: 0; /* Impede que o input ultrapasse o container flex no celular */
+    width: 100%;
     height: 48px;
-    padding: 0 14px;
+    padding: 0 12px;
     font-size: var(--body);
     font-family: inherit;
     border: 1.5px solid var(--border);
@@ -1450,7 +1535,8 @@ button {
     background: var(--background);
     color: var(--text);
     outline: none;
-    transition: border-color var(--transition-fast);
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
 }
 
 .ai-chat-form input:focus {
@@ -1459,8 +1545,10 @@ button {
 }
 
 .ai-send-btn {
+    flex-shrink: 0; /* Mantém o botão íntegro sem vazar */
     height: 48px;
-    padding: 0 16px;
+    min-width: 48px;
+    padding: 0 14px;
     background: var(--primary);
     color: #ffffff;
     font-size: var(--small);
@@ -1470,9 +1558,21 @@ button {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
-    transition: background var(--transition-fast), transform var(--transition-fast);
+    box-sizing: border-box;
+    transition: background 0.15s ease, transform 0.15s ease;
     white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+    .mode-tab {
+        font-size: var(--caption);
+        padding: 0 6px;
+    }
+    .ai-send-btn {
+        padding: 0 12px;
+    }
 }
 
 .ai-send-btn:hover {

@@ -316,3 +316,4 @@ if (aiClearBtn) {
         setAIStatus(generator ? (isWebGPU ? "IA Pronta · WebGPU ⚡" : "IA Pronta · CPU/WASM") : "Conversa limpa", "ready", false);
     });
 }
+

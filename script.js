@@ -603,9 +603,58 @@ if ("serviceWorker" in navigator) {
 }
 
 /* =========================================
+   ALTERNADOR DE MODO (JÁ SEI vs. DÚVIDA IA)
+========================================= */
+
+function initModeSelector() {
+    const tabSolve = document.getElementById("tabSolveMode");
+    const tabAi = document.getElementById("tabAiMode");
+    const containerSolve = document.getElementById("modeSolveContainer");
+    const containerAi = document.getElementById("modeAiContainer");
+
+    if (!tabSolve || !tabAi || !containerSolve || !containerAi) return;
+
+    function setMode(mode) {
+        if (mode === "ai") {
+            tabSolve.classList.remove("active");
+            tabSolve.setAttribute("aria-selected", "false");
+            tabAi.classList.add("active");
+            tabAi.setAttribute("aria-selected", "true");
+
+            containerSolve.classList.remove("active");
+            containerAi.classList.add("active");
+            sessionStorage.setItem("resolvePraMimMode", "ai");
+        } else {
+            tabAi.classList.remove("active");
+            tabAi.setAttribute("aria-selected", "false");
+            tabSolve.classList.add("active");
+            tabSolve.setAttribute("aria-selected", "true");
+
+            containerAi.classList.remove("active");
+            containerSolve.classList.add("active");
+            sessionStorage.setItem("resolvePraMimMode", "solve");
+        }
+    }
+
+    window.setHomeMode = setMode;
+
+    tabSolve.addEventListener("click", () => setMode("solve"));
+    tabAi.addEventListener("click", () => {
+        setMode("ai");
+        setTimeout(() => document.getElementById("aiInput")?.focus(), 150);
+    });
+
+    const savedMode = sessionStorage.getItem("resolvePraMimMode");
+    if (savedMode === "ai") {
+        setMode("ai");
+    }
+}
+
+/* =========================================
    INICIALIZAÇÃO
 ========================================= */
 
 if (installBtn) installBtn.style.display = "none";
+initModeSelector();
 renderTasks();
 renderHistory();

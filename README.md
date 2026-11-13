@@ -20,17 +20,15 @@ O **Resolve Pra Mim** é uma aplicação web progressiva (PWA) projetada sob a f
 
 ---
 
-## 🤖 Atividade A2.2 — Chatbot IA com WebGPU e Hugging Face
+## 🤖 Atividade A2.2 — Chatbot IA com WebGPU e Vetorização Hugging Face
 
-Na atividade **A2.2**, o aplicativo integra um modelo de linguagem pequeno (**SLM — Small Language Model**) executado localmente via **WebGPU**:
+Na atividade **A2.2**, o aplicativo integra um motor de **quebra (chunking), vetorização (embeddings) e busca por similaridade de cosseno** executado localmente no navegador via **WebGPU / WASM**:
 
-* **Modelo:** `onnx-community/Qwen2.5-0.5B-Instruct` quantizado em `q4` para WebGPU e fallback `int8` para CPU (WebAssembly).
-* **Biblioteca:** `@huggingface/transformers@3.8.1` via CDN ESM nativa.
-* **Privacidade Absoluta:** O processamento ocorre 100% na máquina/celular do usuário. Nenhuma pergunta ou dado pessoal sai para servidores externos.
-* **Salvaguardas Anti-Alucinação (Grounding / RAG Local):**
-  * O assistente possui um *System Prompt* rígido ancorado no **Código de Defesa do Consumidor (CDC)** e no **Decreto do SAC (nº 11.034/2022)**.
-  * Para cada pergunta do usuário, o sistema realiza uma busca local no banco de fatos legais verificados do *Resolve Pra Mim* (prazo de 5 dias úteis do SAC, devolução em dobro do Art. 42 do CDC, direito de arrependimento de 7 dias do Art. 49 e cancelamento de planos sem multas abusivas) e injeta como contexto para o modelo antes da inferência, eliminando alucinações.
-* **Formulário de Linha Única:** Atende estritamente à especificação da atividade com campo de texto e botão de envio, chips de perguntas frequentes e barra de progresso do download do modelo (~350 MB na primeira carga, posteriormente mantido em cache).
+* **Solucionando o Problema da Aula (Memória e Alucinação):** Em vez de carregar um SLM gerador pesado de ~500 MB (`Qwen2.5-0.5B`) que estoura a memória RAM de celulares/notebooks e alucina palavras, adotamos o pipeline de **extração de embeddings vetoriais** da Hugging Face (`Xenova/all-MiniLM-L6-v2`, com apenas **~23 MB** — 20x mais leve!) combinado a um vetorizador TF-IDF local instantâneo.
+* **Biblioteca:** `@huggingface/transformers@3.8.1` via CDN ESM nativa com aceleração `webgpu` e fallback automático para `wasm` e motor vetorial puro do browser (tempo limite de segurança de 7,5s para nunca travar em 4G ou celulares com pouca RAM).
+* **Zero Alucinação (100% Fiel à Lei):**
+  * A base jurídica do *Resolve Pra Mim* (CDC Art. 42, Art. 49, Art. 18/26, Art. 35, Lei 14.015/2020 e Decreto do SAC nº 11.034/2022) é quebrada em *chunks* semânticos, vetorizada em 384 dimensões e comparada via **Similaridade de Cosseno** com a pergunta do usuário, retornando uma orientação 100% verificada e sem invenções.
+* **Formulário de Linha Única & Seletor de Modo:** Atende estritamente à especificação da atividade com alternador *"🎯 Já sei o que resolver"* vs. *"🤖 Estou em dúvida (IA)"*.
 
 ---
 

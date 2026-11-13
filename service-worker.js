@@ -1,4 +1,4 @@
-const CACHE_NAME = "resolve-pra-mim-v6";
+const CACHE_NAME = "resolve-pra-mim-v7";
 
 const FILES_TO_CACHE = [
     "./",
@@ -27,7 +27,7 @@ self.addEventListener("install", event => {
 });
 
 /* =========================================
-   ATIVAÇÃO
+   ATIVAÇÃO (LIMPA CACHES ANTIGOS IMEDIATAMENTE)
 ========================================= */
 
 self.addEventListener("activate", event => {
@@ -44,37 +44,33 @@ self.addEventListener("activate", event => {
 });
 
 /* =========================================
-   BUSCA DE ARQUIVOS
+   BUSCA DE ARQUIVOS (NETWORK-FIRST COM FALLBACK OFFLINE)
+   Garante que celulares e notebooks sempre carreguem a versão mais recente
 ========================================= */
 
 self.addEventListener("fetch", event => {
     const url = new URL(event.request.url);
 
-    // Ignora chamadas da API Vercel (/api/*) e domínios externos (Firebase Auth)
+    // Ignora chamadas da API Vercel (/api/*) e domínios externos (Firebase / Hugging Face CDN)
     if (event.request.method !== "GET" || url.pathname.includes("/api/") || url.origin !== self.location.origin) {
         return;
     }
 
     event.respondWith(
-        caches.match(event.request).then(cachedResponse => {
-            if (cachedResponse) {
-                return cachedResponse;
-            }
-
-            return fetch(event.request).then(response => {
-                if (!response || response.status !== 200 || response.type === "opaque") {
-                    return response;
+        fetch(event.request)
+            .then(networkResponse => {
+                if (networkResponse && networkResponse.status === 200 && networkResponse.type !== "opaque") {
+                    const responseClone = networkResponse.clone();
+                    caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, responseClone);
+                    });
                 }
-
-                const responseClone = response.clone();
-                caches.open(CACHE_NAME).then(cache => {
-                    cache.put(event.request, responseClone);
+                return networkResponse;
+            })
+            .catch(() => {
+                return caches.match(event.request).then(cachedResponse => {
+                    return cachedResponse || caches.match("./index.html");
                 });
-
-                return response;
-            }).catch(() => {
-                return caches.match("./index.html");
-            });
-        })
+            })
     );
 });
